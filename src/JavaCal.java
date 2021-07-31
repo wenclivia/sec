@@ -1,7 +1,13 @@
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+
 
 public class JavaCal extends JPanel {
     private Font font = new Font(Font.MONOSPACED, Font.BOLD, 14);
@@ -49,37 +55,41 @@ public class JavaCal extends JPanel {
         //实例化监控对象
         NumberAction numAction = new NumberAction();
         CommandAction cmdAction = new CommandAction();
-
         makeButton("7", numAction);
         makeButton("8", numAction);
         makeButton("9", numAction);
         makeButton("←", numAction);
+
         makeButton("4", numAction);
         makeButton("5", numAction);
         makeButton("6", numAction);
-        makeButton("0", numAction);
+        makeButton("/", cmdAction);
+
         makeButton("1", numAction);
         makeButton("2", numAction);
         makeButton("3", numAction);
-        makeButton(".", numAction);
-        makeButton("+", cmdAction);
-        makeButton("-", cmdAction);
         makeButton("*", cmdAction);
-        makeButton("/", cmdAction);
-        makeButton("%", cmdAction);
-        makeButton("^", cmdAction);
+
+        makeButton("0", numAction);
+        makeButton(".", numAction);
+        makeButton("=", cmdAction);
+        makeButton("-", cmdAction);
+
         makeButton("±", cmdAction);
+        makeButton("^", cmdAction);
+        makeButton("%", cmdAction);
+        makeButton("+", cmdAction);
 
 //        将面板，两个按键加入面板，实现界面
         add(display, BorderLayout.NORTH);
-        add(display, BorderLayout.CENTER);
-        add(display, BorderLayout.SOUTH);
+        add(jp, BorderLayout.CENTER);
+        add(clear,BorderLayout.SOUTH);
     }
 
     private void makeButton(String buttonName, ActionListener al) {
         JButton jb = new JButton(buttonName);
         jb.setFont(font);
-        jb.add(jb);
+        jp.add(jb);
         jb.addActionListener(al);
 
     }
@@ -194,26 +204,54 @@ public class JavaCal extends JPanel {
         display.setText(""+result);
     }
 }
-class Frame{
-    public static void init(JFrame jFrame,Dimension frameSize,String title,String iconFileName,boolean resizable){
+class Frame {
+    public static void init(JFrame jFrame, Dimension frameSize, String title, String iconFileName, boolean resizable) {
         //系统工具包
-        Toolkit tk=Toolkit.getDefaultToolkit();
+        Toolkit tk = Toolkit.getDefaultToolkit();
         //屏幕大小
-        Dimension screenSize=tk.getScreenSize();
+        Dimension screenSize = tk.getScreenSize();
         //获取宽高
-        int screenWidth=screenSize.width;
-        int screenHeight=screenSize.height;
+        int screenWidth = screenSize.width;
+        int screenHeight = screenSize.height;
         //找中心点
-        int centerX=screenWidth/2;
-        int centerY=screenHeight/2;
+        int centerX = screenWidth / 2;
+        int centerY = screenHeight / 2;
         //窗口大小
-        int frameWidth= frameSize.width;
-        int frameHeight= frameSize.height;;
+        int frameWidth = frameSize.width;
+        int frameHeight = frameSize.height;
+        ;
         //窗体位置
-        jFrame.setBounds(centerX-frameHeight/2,centerY-frameHeight/2,frameWidth,frameHeight);
+        jFrame.setBounds(centerX - frameWidth / 2, centerY - frameHeight / 2, frameWidth, frameHeight);
         jFrame.setTitle(title);
-        if(iconFileName != null){
+        if (iconFileName != null) {
             jFrame.setIconImage(tk.getImage(iconFileName));//图标
         }
+        try {
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+            SwingUtilities.updateComponentTreeUI(jFrame);
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+        jFrame.setLocationRelativeTo(null);
+        jFrame.setResizable(resizable);// 设置窗体是否可以改变大小
+        jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // 设置程序关闭动作
+        jFrame.setVisible(true);// 显示窗体
     }
 }
+
+class CalculatorFrame extends JFrame {
+    public CalculatorFrame() {
+        add(new JavaCal());
+        Frame.init(this, new Dimension(800, 600), "简易计算器", null,
+                false);
+        // 让组件按原始大小显示,并且窗体的大小刚好能够容纳所有的组件
+        this.pack();
+    }
+}
+
+class Calculator {
+    public static void main(String[] args) {
+        new CalculatorFrame();
+    }
+}
+
